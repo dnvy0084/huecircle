@@ -3,11 +3,10 @@ let gl;
 const vertexSource = `
 	attribute vec2 position;
 
-	uniform mat3 model;
 	uniform mat3 world;
 
 	void main() {
-		gl_Position = vec4((world * model * vec3(position, 1.0)).xy, 0.0, 1.0);
+		gl_Position = vec4((world * vec3(position, 1.0)).xy, 0.0, 1.0);
 		// gl_Position = vec4(position, 0.0, 1.0);
 	}
 `;
@@ -38,7 +37,7 @@ export default class Main {
 			name => this.setAttribLocation(this.program, name)
 		);
 
-		['model', 'world'].forEach(
+		['world'].forEach(
 			name => this.setUniformLocation(this.program, name)
 		);
 
@@ -51,11 +50,6 @@ export default class Main {
 		this.setWorldTransform();
 
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
-
-		// const buf = gl.createBuffer();
-		// gl.bindBuffer(gl.ARRAY_BUFFER, buf);
-		// gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([0, 0, 1, 0, 1, 1, 0, 1]), gl.STATIC_DRAW);
-
 		gl.vertexAttribPointer(this.program.position, 2, gl.FLOAT, false, 4 * 2, 0);
 		gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0);
 	}
@@ -87,8 +81,8 @@ export default class Main {
 	}
 
 	makeBuffer() {
-		const w = this.canvas.width
-			, h = this.canvas.height;
+		const w = 100//this.canvas.width
+			, h = 750//this.canvas.height;
 
 		const buffer = gl.createBuffer();
 
@@ -138,7 +132,6 @@ export default class Main {
 			-1, 1, 1,
 		]);
 
-		gl.uniformMatrix3fv(this.program.model, false, new Float32Array([1, 0, 0, 0, 1, 0, 0, 0, 1]));
 		gl.uniformMatrix3fv(this.program.world, false, world);
 	}
 
